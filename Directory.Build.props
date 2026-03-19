@@ -1,0 +1,32 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+
+    <!-- NuGet package metadata — override per-project as needed -->
+    <Authors>YourOrg</Authors>
+    <Company>YourOrg</Company>
+    <Product>AutomationFramework</Product>
+    <Copyright>Copyright © YourOrg</Copyright>
+    <RepositoryUrl>https://your-internal-repo/infra-automation</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>automation;testing;playwright;api</PackageTags>
+
+    <!-- Default version — override via build args: /p:PackageVersion=1.2.3 -->
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageVersion>1.0.0</PackageVersion>
+
+    <!-- SourceLink / CI determinism -->
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+</Project>
