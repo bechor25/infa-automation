@@ -1,0 +1,11 @@
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\bin\Release\net8.0\Company.Automation.Contracts.deps.json
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\bin\Release\net8.0\Company.Automation.Contracts.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\bin\Release\net8.0\Company.Automation.Contracts.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\obj\Release\net8.0\Company.Automation.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\obj\Release\net8.0\Company.Automation.Contracts.AssemblyInfoInputs.cache
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\obj\Release\net8.0\Company.Automation.Contracts.AssemblyInfo.cs
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\obj\Release\net8.0\Company.Automation.Contracts.csproj.CoreCompileInputs.cache
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\obj\Release\net8.0\Company.Automation.Contracts.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\obj\Release\net8.0\refint\Company.Automation.Contracts.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\obj\Release\net8.0\Company.Automation.Contracts.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Contracts\obj\Release\net8.0\ref\Company.Automation.Contracts.dll

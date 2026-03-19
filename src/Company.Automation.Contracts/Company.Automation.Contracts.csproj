@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Company.Automation.Contracts</AssemblyName>
+    <RootNamespace>Company.Automation.Contracts</RootNamespace>
+    <Description>Interfaces and abstractions for the Company automation framework.</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,15 @@
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\bin\Release\net8.0\Company.Automation.Configuration.deps.json
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\bin\Release\net8.0\Company.Automation.Configuration.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\bin\Release\net8.0\Company.Automation.Configuration.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\bin\Release\net8.0\Company.Automation.Contracts.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\bin\Release\net8.0\Company.Automation.Contracts.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\Company.Automation.Configuration.csproj.AssemblyReference.cache
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\Company.Automation.Configuration.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\Company.Automation.Configuration.AssemblyInfoInputs.cache
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\Company.Automation.Configuration.AssemblyInfo.cs
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\Company.Automation.Configuration.csproj.CoreCompileInputs.cache
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\Company..1C339449.Up2Date
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\Company.Automation.Configuration.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\refint\Company.Automation.Configuration.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\Company.Automation.Configuration.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Configuration\obj\Release\net8.0\ref\Company.Automation.Configuration.dll

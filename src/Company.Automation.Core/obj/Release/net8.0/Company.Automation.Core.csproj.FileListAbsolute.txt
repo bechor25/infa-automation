@@ -1,0 +1,17 @@
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\bin\Release\net8.0\Company.Automation.Core.deps.json
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\bin\Release\net8.0\Company.Automation.Core.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\bin\Release\net8.0\Company.Automation.Core.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\bin\Release\net8.0\Company.Automation.Configuration.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\bin\Release\net8.0\Company.Automation.Contracts.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\bin\Release\net8.0\Company.Automation.Contracts.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\bin\Release\net8.0\Company.Automation.Configuration.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\Company.Automation.Core.csproj.AssemblyReference.cache
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\Company.Automation.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\Company.Automation.Core.AssemblyInfoInputs.cache
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\Company.Automation.Core.AssemblyInfo.cs
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\Company.Automation.Core.csproj.CoreCompileInputs.cache
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\Company..71832BEF.Up2Date
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\Company.Automation.Core.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\refint\Company.Automation.Core.dll
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\Company.Automation.Core.pdb
+C:\Users\bsimhaev\source\infra-automation\src\Company.Automation.Core\obj\Release\net8.0\ref\Company.Automation.Core.dll
