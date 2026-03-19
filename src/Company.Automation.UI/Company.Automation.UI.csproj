@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Company.Automation.UI</AssemblyName>
+    <RootNamespace>Company.Automation.UI</RootNamespace>
+    <Description>Playwright browser management and UI action wrapper for the Company automation framework.</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Company.Automation.Reporting\Company.Automation.Reporting.csproj" />
+    <ProjectReference Include="..\Company.Automation.Configuration\Company.Automation.Configuration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Playwright" Version="1.44.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageReference Include="Polly" Version="8.4.1" />
+  </ItemGroup>
+</Project>
