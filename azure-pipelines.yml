@@ -1,0 +1,301 @@
+# ============================================================
+# Company Automation Framework — Azure DevOps Pipeline
+# ============================================================
+# Stages:
+#   1. Build     — restore + compile entire solution
+#   2. Test      — Playwright E2E tests, publish TRX + Allure
+#   3. Pack      — NuGet pack (main branch only)
+#   4. Publish   — push packages to internal feed (main branch only)
+# ============================================================
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    exclude:
+      - '**/*.md'
+      - '.gitignore'
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+variables:
+  dotnetVersion: '8.0.x'
+  buildConfiguration: 'Release'
+  # Playwright runs headless in CI; QA appsettings loads automatically
+  ASPNETCORE_ENVIRONMENT: 'QA'
+  AUTOMATION_Browser__Headless: 'true'
+  # NuGet package version — override from pipeline UI or variable group if needed
+  packageVersion: '1.0.$(Build.BuildId)'
+
+# ── Shared build steps referenced in multiple stages ────────────────────────
+
+stages:
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 1 — Build
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: Build
+  displayName: 'Build'
+  jobs:
+  - job: Build
+    displayName: 'Restore & Build'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+
+    - task: UseDotNet@2
+      displayName: 'Use .NET $(dotnetVersion)'
+      inputs:
+        version: $(dotnetVersion)
+        performMultiLevelLookup: true
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build solution'
+      inputs:
+        command: build
+        projects: '**/*.csproj'
+        arguments: '--no-restore --configuration $(buildConfiguration)'
+
+    # Publish compiled test binaries so the Test stage can use them
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish build output'
+      inputs:
+        targetPath: 'samples/Company.Automation.SampleTests/bin/$(buildConfiguration)'
+        artifact: 'test-binaries'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 2 — Test
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: Test
+  displayName: 'Test'
+  dependsOn: Build
+  jobs:
+  - job: E2E
+    displayName: 'Playwright E2E Tests'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+
+    - task: UseDotNet@2
+      displayName: 'Use .NET $(dotnetVersion)'
+      inputs:
+        version: $(dotnetVersion)
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: restore
+        projects: '**/*.csproj'
+
+    # Build only the test project (framework libs come from NuGet cache)
+    - task: DotNetCoreCLI@2
+      displayName: 'Build SampleTests'
+      inputs:
+        command: build
+        projects: 'samples/Company.Automation.SampleTests/Company.Automation.SampleTests.csproj'
+        arguments: '--no-restore --configuration $(buildConfiguration)'
+
+    # Install Playwright browser binaries + OS-level dependencies
+    - task: PowerShell@2
+      displayName: 'Install Playwright Chromium'
+      inputs:
+        targetType: inline
+        script: |
+          $playwright = "samples/Company.Automation.SampleTests/bin/$(buildConfiguration)/net8.0/playwright.ps1"
+          & $playwright install chromium --with-deps
+        pwsh: true
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Run E2E tests'
+      env:
+        ASPNETCORE_ENVIRONMENT: $(ASPNETCORE_ENVIRONMENT)
+        AUTOMATION_Browser__Headless: $(AUTOMATION_Browser__Headless)
+      inputs:
+        command: test
+        projects: 'samples/Company.Automation.SampleTests/Company.Automation.SampleTests.csproj'
+        arguments: >
+          --no-build
+          --configuration $(buildConfiguration)
+          --logger "trx;LogFileName=results.trx"
+          --results-directory $(Agent.TempDirectory)/TestResults
+        publishTestResults: false   # we do it manually below for full control
+
+    # Publish TRX — shows pass/fail breakdown in the Pipeline run UI
+    - task: PublishTestResults@2
+      displayName: 'Publish TRX results'
+      condition: always()
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '$(Agent.TempDirectory)/TestResults/*.trx'
+        mergeTestResults: true
+        testRunTitle: 'E2E Tests — $(Build.SourceBranchName)'
+        failTaskOnFailedTests: true
+
+    # Publish Allure raw results for report generation
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Allure results'
+      condition: always()
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/allure-results'
+        artifact: 'allure-results'
+
+    # Publish screenshots / traces captured on failure
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish failure screenshots'
+      condition: failed()
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/screenshots'
+        artifact: 'failure-screenshots'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 3 — Pack NuGet packages  (main branch only)
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: Pack
+  displayName: 'Pack NuGet'
+  dependsOn: Test
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - job: Pack
+    displayName: 'dotnet pack'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+
+    - task: UseDotNet@2
+      displayName: 'Use .NET $(dotnetVersion)'
+      inputs:
+        version: $(dotnetVersion)
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: restore
+        projects: 'src/**/*.csproj'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Pack Contracts'
+      inputs:
+        command: pack
+        packagesToPack: 'src/Company.Automation.Contracts/Company.Automation.Contracts.csproj'
+        configuration: $(buildConfiguration)
+        outputDir: '$(Build.ArtifactStagingDirectory)/nupkg'
+        versioningScheme: byEnvVar
+        versionEnvVar: packageVersion
+        nobuild: false
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Pack Configuration'
+      inputs:
+        command: pack
+        packagesToPack: 'src/Company.Automation.Configuration/Company.Automation.Configuration.csproj'
+        configuration: $(buildConfiguration)
+        outputDir: '$(Build.ArtifactStagingDirectory)/nupkg'
+        versioningScheme: byEnvVar
+        versionEnvVar: packageVersion
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Pack Core'
+      inputs:
+        command: pack
+        packagesToPack: 'src/Company.Automation.Core/Company.Automation.Core.csproj'
+        configuration: $(buildConfiguration)
+        outputDir: '$(Build.ArtifactStagingDirectory)/nupkg'
+        versioningScheme: byEnvVar
+        versionEnvVar: packageVersion
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Pack Reporting'
+      inputs:
+        command: pack
+        packagesToPack: 'src/Company.Automation.Reporting/Company.Automation.Reporting.csproj'
+        configuration: $(buildConfiguration)
+        outputDir: '$(Build.ArtifactStagingDirectory)/nupkg'
+        versioningScheme: byEnvVar
+        versionEnvVar: packageVersion
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Pack UI'
+      inputs:
+        command: pack
+        packagesToPack: 'src/Company.Automation.UI/Company.Automation.UI.csproj'
+        configuration: $(buildConfiguration)
+        outputDir: '$(Build.ArtifactStagingDirectory)/nupkg'
+        versioningScheme: byEnvVar
+        versionEnvVar: packageVersion
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Pack API'
+      inputs:
+        command: pack
+        packagesToPack: 'src/Company.Automation.API/Company.Automation.API.csproj'
+        configuration: $(buildConfiguration)
+        outputDir: '$(Build.ArtifactStagingDirectory)/nupkg'
+        versioningScheme: byEnvVar
+        versionEnvVar: packageVersion
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Pack TestHost'
+      inputs:
+        command: pack
+        packagesToPack: 'src/Company.Automation.TestHost/Company.Automation.TestHost.csproj'
+        configuration: $(buildConfiguration)
+        outputDir: '$(Build.ArtifactStagingDirectory)/nupkg'
+        versioningScheme: byEnvVar
+        versionEnvVar: packageVersion
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish .nupkg files'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/nupkg'
+        artifact: 'nuget-packages'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Stage 4 — Publish NuGet packages to internal feed  (main branch only)
+# ─────────────────────────────────────────────────────────────────────────────
+- stage: Publish
+  displayName: 'Publish NuGet'
+  dependsOn: Pack
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: PublishPackages
+    displayName: 'Push to internal feed'
+    environment: 'nuget-internal'   # create this environment in Azure DevOps Environments
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - task: DownloadPipelineArtifact@2
+            displayName: 'Download .nupkg files'
+            inputs:
+              artifact: 'nuget-packages'
+              path: '$(Pipeline.Workspace)/nupkg'
+
+          # Authenticates against Azure Artifacts feeds or any NuGet feed
+          # configured in Project Settings → Service connections
+          - task: NuGetAuthenticate@1
+            displayName: 'Authenticate to NuGet feed'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Push packages to feed'
+            inputs:
+              command: push
+              packagesToPush: '$(Pipeline.Workspace)/nupkg/*.nupkg'
+              nuGetFeedType: internal
+              # Set this to your Azure Artifacts feed name:
+              publishVstsFeed: 'YOUR_FEED_NAME'
+              allowPackageConflicts: true   # skips already-published versions
